@@ -1,0 +1,1013 @@
+everything that happens in javascript inside the "EXECUTION CONTEXT"
+
+EXECUTION CONTEXT has two blocks 
+1. memory block and code block 
+     
+memory block:
+------------
+also known as varibale environment, this is the place where all the varibles and functions stored
+in a key:value pairs
+
+code block:
+-----------
+this is the place where code executes line by line.
+
+* Javascript is single- threaded and syncronus[code executes line by line]
+
+since in the code block the code executes single line at a time so Javascript is syncronus & single threaded.
+
+what happens when you run Javascript code.?
+--------------------------------------------
+example:
+--------
+var n = 2;
+function square(num){
+    return num*num;
+}
+
+var square2 = square(n);
+var square3 = square(4);
+
+when you run the js code the "GLOBAL EXECUTION CONTEXT" will get created.
+
+this creation happens in 2 phases
+memory phase and code phase 
+
+1st phase:
+----------
+all the varibales are stored as undefined and function they stores entire function.
+
+memory:                                 code 
+-------------------------------------------------------
+n : undefined
+square: { 
+        function square(num){
+        return num*num;}
+        }
+square2: undefined
+square3 : undefined
+
+2nd phase:
+------------
+code execution phase it executes single line at a time
+
+memory:                                 code 
+-------------------------------------------------------
+n : 2
+square: { 
+        function square(num){
+            var res = num*num;
+            return res;}
+        }
+square2: 4
+square3 : 16
+
+when the function invoked at code execution phase once agian the "execution context" is created.
+again same situation
+
+since the function was called 2 times 
+var square2 = square(n);
+var square3 = square(4);
+
+2 execution contexts will get created.
+
+for var square2 = square(n); 
+the execution contexts:
+--------------------------
+1st phase[memory phase]:
+-----------
+as we know all the varibales will be undefined initially
+
+memory:                                 code 
+-------------------------------------------------------
+num: undefined
+res: undefined
+
+2nd phase[code phase]:
+----------------------
+memory:                                 code 
+-------------------------------------------------------
+num: 2
+res: 4
+
+-> once the function code executed the "global execution context" created for function wil get destroyed.
+
+for var square3 = square(4); 
+the execution contexts:
+--------------------------
+1st phase[memory phase]:
+-----------
+as we know all the varibales will be undefined initially
+
+memory:                                 code 
+-------------------------------------------------------
+num: undefined
+res: undefined
+
+2nd phase[code phase]:
+----------------------
+memory:                                 code 
+-------------------------------------------------------
+num: 4
+res: 4
+
+-> once the function code executed the "global execution context" created for function wil get destroyed.
+
+
+for functions when functions returns the value the control will go back to from where the call is being invoked in this case
+the function is being invoked from the "var square2 = square(n);" so function will calculate and returns the value which 
+is 4 now square2 value will change to 4,
+now the execution will go to next line and same scenario, it will calculate and return the value, the control will go back to the 
+place where the function was invoked. and square3 value changes to 16
+
+
+** once the javascript code is executed the "GLOBAL EXECUTION CONTEXT" will get destroyed.
+
+
+Hoisting:
+---------
+we can access the varibales and functions even before initliazation.
+example:
+-------
+console.log(x);
+getName();
+var x = 7;
+function getName(){
+    console.log("tharun);
+}
+
+output:
+undefined
+tharun
+
+the reason behind is as we know that whenever we run javascript code the global execution context will get created.
+we also know that it has 2 phases
+memory phase and code phase
+
+memory phase:
+----------------
+x : undefined
+getName : getName(){
+    console.log("tharun);
+}
+
+code phase:
+-----------
+// the code called before the value is not being initliazed 
+here we are calling var x the default value is undefined
+so we get undefined
+and 
+we calling function as we all know that for function the entire function copy will made in the entry. 
+since the copy is made we calling getName will get whatever it is logging/returning
+
+example:
+--------
+console.log(x);
+getName();
+function getName(){
+    console.log("tharun);
+}
+
+o/p:
+----
+not defined -> execution will get stopped.
+
+scope & lexical environment:
+----------------------------
+example:
+-------
+
+function a(){
+    console.log(b)
+}
+var b = 10;
+a();
+
+expected o/p: undefined
+actual o/p: 10
+
+Js engine will check for b in the local execution environment which is function environment so we might get undefined
+but we are getting 10
+
+function a(){
+    var b = 10;
+    function c(){
+        console.log(b);
+    }
+}
+
+expected o/p: undefined
+o/P: 10
+
+-> here comes into picture scope and lexical environment.
+ when  the global execution context is created, we will also get created lexical environment, lexical means hierarchial.
+
+ call stack:
+ ---------- will have one call stack and all the execution context will get pushed into the call stack as soon as call stack 
+ receives the GEC it executes it and call stack gets freed.
+
+        CALL STACK
+ |   _________________
+ |  |       GEC       |
+ |  | memory |code    | 
+ -> | .....           |
+ |  |________________ |
+ |
+ |   _________________
+ |  |       GEC       |
+ |  | memory |code    | 
+ -> | .....           |
+ |  |________________ |
+ |
+ |   _________________
+ |  |       GEC       |
+ |  | memory |code    | 
+ -> | .....           |
+ |  |________________ |
+ |->Null
+
+ everything is lexically connected 
+ this is the reason why we are getting 10 as o/p becuase it check lexically, the way of finding all space called scope chain.
+
+
+function a(){
+    var b = 10;
+    function c(){
+        console.log(b);
+    }
+}
+ since all where lexically connected the function C which is child has all the access to parent, so eventhough their is no variable b in function c
+ still we get o/p as 10
+
+
+ let & const:
+ ------------
+ console.log(b)
+ let a = 10;
+ var b = 100;
+
+ o/p: 
+ undefined
+ reference error
+
+ becuase b is is hoisted means, it declare the variable with default value which is undefined since we called even before the line execution.
+ let and const are store in different scope which is "BLOCK scope" but event they also hoisted as undefined, since they hoisted in diffrent scope we get
+ error cannot access it before initliazation
+
+ var is hoisted in global scope 
+
+ BLOCK SCOPE:
+ let : undefined
+ const: undefined
+
+ GLOBAL SCOPE:
+ var : undefined
+
+ temporial deadzone:
+ -------------------
+ the time since when the let variable was hoisted and till the variable was initliazed this time is called
+ temporial deadzone.
+ after the initliazation the temporial deadzone ends.
+
+ when the varibales are in temporial deadzone we connot access them.
+
+ syntax error:
+ ------------
+ let a = 10;
+ let a = 100; duplication are not allowed
+
+ but this is possible:
+ let a; 
+ a = 100;
+
+ but for const it will not accept we need to initliaze at same line
+ const a = 10;
+
+ type error:
+ -----------
+ cont a  = 10;
+ a = 100; -> assignment to const variable
+
+ console.log(b)
+ let b = 10 -> reference error b is not defined
+
+ BLOCK scope & shadowing:
+ -----------------------
+ the code which written between the parenthesis is called block 
+ {
+    // also known as compound statement -> we combime multiple statements
+ }
+
+ if(true){
+    statements
+ }
+
+ block scope:
+ -------------
+ what all variables and funtions we can access in the block called block scope.
+
+ example:
+
+ {
+    var a = 10;
+    let b = 20;
+    cosnt c = 30;
+ }
+
+ BLOCK:
+ b : 20
+ c : 30
+
+ GLOBAL:
+ a = 10
+
+->let and const are block scoped we cannot access them from outside the block
+
+ example:
+
+  {
+    var a = 10;
+    let b = 20;
+    cosnt c = 30;
+    console.log(a);
+    console.log(b);
+    console.log(c);
+ }
+
+ 0/p:
+ 10  
+ 20
+ 30
+
+ {
+    var a = 10;
+    let b = 20;
+    cosnt c = 30; 
+ }
+ console.log(a);
+ console.log(b);
+ console.log(c);
+
+ 0/p:
+ 10  
+ reference error b is not defined
+ reference error c is not defined
+
+ becuase when block finishes executing the block scope is gone so we get not defined. whereas a is stored in global scope so we get 10.
+
+ shadowing:
+ ----------
+
+ var a = 100;
+ {
+    var a = 10;
+    console.log(a);  -> this variable was shadowed -> which means it replace the value to 10 from 100.
+ }
+ console.log(a);
+
+ o/p:
+ 10
+ 10
+
+ but this is not in the case of "let" and "const" since let and const are in different scope they don't get overrided
+ where as the var is in same scope they get overrided which is called shadowing.
+
+ closures:
+ ---------
+ function a(){
+    var b = 10;
+    function c(){
+        console.log(b);
+    }
+    c();
+}
+a();
+
+function along with lexical scope forms a "closure"
+
+example:
+--------
+function x(){
+    var a = 7;
+    function y(){
+        console.log(a);
+    }
+    return y;//this will return function y
+}
+
+var z = x();
+console.log(z);
+-> Now z variable is having function y which logs a value
+z();
+-> now if we call z() which is holding function y which log a value of "a" the expecatation is should get undefined
+since Z is only holding function "y", before since "y" is lexically connected with function "x" where having "a" value 
+it logged value "7" but now there is no function "x" at "Z" but we still getting o/p as 7, becuase "the function that returned will gold
+the lexical nature as well" where the value is coming, what is the value and thys is reason we still getting o/p: as 7 this type of functions called "CLOSURES"
+
+"FUNCTION ALONG WITH lexical SCOPE FORMS A CLOSURE"
+
+SETTIMEOUT();
+-------------
+function x(){
+    var i = 1;
+    settimeout(function(){   
+        console.log(i);           o/p: hello
+    }, 3000);                            1
+    console.log("Hello")
+}
+
+generally we will think that it will wait for 3 sec and then it prints value of "i" and then it will print"Hello"
+
+No,
+JavaScript does not wait ofr anything to execute it will get executes the log first and then after 3 sec the value of "i" get prints
+
+Anonymous function & functions:
+--------------------------------
+
+function statement:
+-------------------
+function a(){
+    console.log("hello"); -> the way we write  function is called function statement
+}
+a(); 
+
+function expression:
+--------------------
+var b = function(){
+    console.log("hello"); -> passing function to a varibale
+}
+b();
+
+function declaration:
+---------------------
+function statement and function declaration both are same.
+
+-> the diff between function declaration and function statement is hoistec in nature
+
+example:
+--------
+a();
+b();
+function a(){
+    console.log("a");
+}
+
+var b = function (){
+    console.log("b");
+}
+
+o/p:
+will get error for "b" is not a function
+
+global execution context:
+--------------------------
+memory | code
+a: {a(){
+    console.log("a");
+}}
+b: undefined
+
+becuase since we declared "b" as variable and we passed a function
+we all know that for var the default value is "undefined" and then we are calling even before initliazation, and that too
+we caliing it as function that is the reason we are getting that error
+
+
+Anonymous function:
+-------------------
+name less functions are called Anonymous functions, we can use only these to initliaze to a variable
+
+example:
+--------
+var b = function (){
+    console.log("b");
+}
+other than initliazation to variables if we use to other places it will get error that function is not required.
+
+named function:
+--------------
+var b = function abc (){
+    console.log("b");
+}
+abc();
+
+o/p: will get error that abc is not defined  becuase it does not create any entry in global scope.
+
+diff b/w parameters and arguments:
+----------------------------------
+
+var b = function(para1, para2){
+    console.log("hello");
+}
+
+b(1,2)
+   |- arguments 
+
+
+first class functions:
+----------------------
+the ability of functions that we can use as variables, arguments, returning is called a first class function.
+
+
+var b = function(para1){
+    console.log("hello");
+}
+
+b(function(){
+    console.log("hi")
+})
+
+var b = function(para1, para2){
+    return function abc(){
+        console.log("hello");
+    }
+}
+
+
+callback functions:
+--------------------
+calling one function in other function
+
+example:
+---------
+function x(y){
+    console.log("x)";
+    y();
+}
+
+x(function y(){
+    console.log("y)
+})
+
+setTimeout(function(){
+    console.log("timer) -> even if we decalre at top JS does not wait for it execute, if executed all the code and then after 3 sec the timer will get logged
+}, 3000);
+
+o/p: 
+x
+y
+timer
+
+*** Any operation blocking call stack is called "BLOCKING THE MAIN THREAD"
+example:
+--------
+if function x takes longer time to get execute, since execeution happens according to call stack it will get blocked 
+at function x so the main thread which is "call stack" is blocked there. so we need to use Aync operations setTimeout()
+
+event loop:
+-----------
+JS is syncronus single thread, it has only one call stack and call stack is present in JavaScript engine.
+
+the main job of call stack is whatever comes into it, it will just execute it.
+
+-> javascript does not wait for anything to get execute.
+-> call stack also does not have any power to tell execute this program after particular time.
+-> if we want to settime for program to execute, since call stack & JS does not have that feaures/powers wheras broweser has the feaures
+   these features can be used by GEC in call stack.
+
+
+   broweser
+   web api's
+   -> setTimeout()
+   -> loacl storage
+   -> location
+   -> fetch() -> to make network call to other server
+ 
+ broweser gives this powers to GEC 
+
+ -> the pupose of event loop is continous monitor of call back queue and call stack, if call stack is empty 
+ and callback queue has something it will just push the items from call back queue to call stack then we know that
+ whatever comes to call stack it just excecutes.
+
+ -> the purpose of callback queue is if more than one call back function comes they get stored in callback queue
+ then pushed by one by one by eventloop to call stack.
+
+ -> All the callback function comes through promises will come to "microstack queue"
+
+ *** microstack queue is having more priority than callback queue.
+
+starvation:
+-----------
+suppose we go multiple callback function into the microstack queue and we are not getting chance to get execute the callback function
+in the callback queue, this situation is called "starvation"
+
+JavaScript run time environment:
+--------------------------------
+it contiains jS engine [which contiains call stack where entire code will get executes]
+and it also contiains web API's [setTimeout(), fetch(), console, window etc..] and event loop and call back queue & micro task queue
+
+each broweser has it's own js engine:
+microsoft edge has spidermonkey
+chrome has v8
+
+js engine is not a machine it's just a normal code written in low-level
+
+* JS engine is interpreter + compiler  [JIT compiled language]
+JIT just in time uses both interpreter + compiler
+
+this how js code executes:
+human readable code -> parsing (broken down into tokens and in parsing we have one more thing called syntax parser which generates AST[Abstract Syntax Tree])
+and then -> compiler (JIT compiler) -> execution.
+
+interpreter: [fastly executed]
+------------
+starts executing code line by line
+
+compiler: [ more efficiency]
+---------
+whole codde is compiled before executing and created optimized version of code
+
+while execution parser produces AST[Abstract Syntax Tree]
+interpreter does [ it converts to byte code ] meanwhile while this is happening compiler compiles code 7' created efficient code at run time
+so called JIT
+
+v8 js engine:
+--------------
+    JavaScript source code:
+            |
+            |
+            |
+            [parser] it has syntax parser which generates AST [Abstract Syntax Tree]
+            |
+            |
+            |_____________ 
+            |             |
+interpreter Ignition      compiler
+         |                   |
+         |                   |
+         byte code <------optimized code 
+
+
+garbage collector:
+------------------
+***all variables that we declare will store in memory heap and garbage collection is responsible for free up memory heap which are un-used variables.
+
+Trust issues with setTimeout():
+--------------------------------
+
+example:
+
+function cb(){
+    console.log("callback);
+}
+setTimeout(ab, 5000);
+// million lines code
+
+here in this example we declared 5 sec which means after 5 sec it has to execute the code but it might/might not happen sometimes,
+so we have trust issues, it might take longer than we mentioned which si 5 sec.
+
+the reason behind is ->
+
+_____________
+|    |      |             web api
+|GEC |      |              * setTimeout() --> 5 sec later
+|_____      |              * fetch()
+            |              * console
+call stack  |              * etc..
+_____________              -------------
+Js engine 
+
+
+    <-------------
+    |event loop  |
+    ------------->    callback queue[cb]  micro task queue[]
+
+    -> settimeout registers callback in webapi & we have 5 sec time after completion of 5 sec it will come to call back queue& noe event loop is
+    monitoring when will be the call stack get  freed so that it can push [cb] from callback queue to call stack 
+    ->sine we do have million lines of code so call stack will not be empty since we have lot code to get executed but settimeout came to callback queue
+    and eventloop is monitoring when will be call stack get freed up so that is the reason why it is  taking more time which > 5secs.   
+    -> we should not put busy main threads this is called main thread blocking
+
+functional programming:
+-----------------------
+Higher order functions:
+-----------------------
+any function that takes functions as an arguments/ returns a function is called higher order functions.
+
+example:
+--------
+function x() {
+    console.log("hello");
+}
+function y(x){
+    x();
+}
+
+-> **** map(), filter(), reduce() are higher order functions
+
+map():
+-----
+-> used to transform an array
+const arr  = [1,2,3,4]
+we need to make double each element
+cosnt output = arr.map(function(x){
+    return x*2;
+})   
+console.log(output)
+
+filter():
+----------
+-> used to filter the values in function
+
+cosnt arr = [5,1,3,2,4]
+//filter odd values
+cosnt output = arr.filter(function(x){
+    if(!x%2==0){
+        return x;
+    }
+});
+console.log(output)
+
+
+reduce():
+--------
+iterates over all elements and get sume/ max element
+
+const output = arr.reduce(function(acc, curr)){
+    //in this we pass 2 arguments accumalator it act list sum declaration like sum = 0
+    // curr is like "i" iterating over elements
+    acc = acc + curr;
+    return acc;
+}, 0//we need to pass the intial value of accumalator here which is 0)
+
+-> get max element in array
+const arr = [1,2,3,5]
+const output = arr.reduce(max, curr){
+    if(curr>max){
+        max = curr;
+    }
+    return max;
+},0);
+console.log(output);
+
+more examples:
+--------------
+const users = [
+  { firstName: "a", lastName: "b", age: 28 },
+  { firstName: "c", lastName: "d", age: 38 },
+];
+
+// get list of full name
+const output = users.map((x) => x.firstName + x.lastName);
+console.log(output);
+
+//count  age
+const output2 = users.reduce(function (acc, curr) {
+  // Check if the age property exists in the accumulator
+  if (acc[curr.age]) {
+    acc[curr.age] += 1;
+  } else {
+    acc[curr.age] = 1;
+  }
+  return acc; // Return the updated accumulator
+}, {});
+
+console.log(output2);
+
+//firstn name of age <30
+
+const output3 = users.filter((x) => x.age < 30).map((x) => x.firstName);
+console.log(output3);
+
+callback function:
+------------------
+console.log("hi")
+setTimeout(function(){ // used to perform Anonymous actions 
+// as we know js wait for nothing it just keep executing, how setTimeout functions execurted er discssed before
+console.log("h"ello");
+})
+
+
+const cart = ["shoes","pants","kurtha"]
+api.createOrder() --> first it has to go to cart and then should got to proceedPayment
+api.proceedPayment()
+
+we have dependency on create order once order os created then only have to go to proceedPayment.
+here "callback" comes into picture.
+
+we put proceedPayment code inside the callback function
+
+api.createOrder(cart, function(){
+    api.proceedPayment();
+})
+we are giving "proceedPayment()" to other function which is risky becuase createOrder() might/might-not
+invoked which is called "inversion of control"[which wll be not in control since we gave callback function
+to other function]
+
+callback hell:
+--------------
+multiple callback function inside function 
+example:
+-------
+createOrder(cart, function(orderId){
+    proceedPayment(orderId, function(paymentInfo){
+        showOrderSummary(paymentInfo, function(){
+            updateCartBalance();
+        })
+    })
+})
+promises:
+---------
+without promises:
+-----------------
+const cart = ["shoes", "pants", "kurtha"]
+
+and having two functions
+createOrder(cart) // let's say this will return order id
+proceedPayment(orderId)
+
+here we passing one function in inside function
+
+createOrder(cart, function(orderId)){
+    proceedPayment(orderId);
+}
+
+** we just blindly passed by trusting "createOrder" api to trigger "proceedPayment" it might or might not or it might trigger more than once.
+we can solve this problem with "promises":
+------------------------------------------
+const prom = createOrder(cart); -> which will return a promise[nothing but object contins the data based on function functionality] 
+at the time of execeution
+                             
+initially the promise object will get created 
+let's say 
+{data:undefined} --> after some time empty object will get filled with data which looks like in our case: {data:orderId}
+
+** once the promise object get filled then this code will get triggerd ***which will call oncly once
+
+promise.then(function(orderId){
+    proceedPayment(orderId); 
+})
+
+promise:
+----------
+it is an object representing the eventual completion of an Asyncronous operation
+
+normal structre of promise object:
+
+const user = fetch(api);
+
+user: promise
+{
+    [prototype] : promise
+    [promiseState] : pending // it will get changed to fullyFilledState once the request call is success
+    [promiseResult] : undefined // it will filled whatever respone by the fetch() returns
+}
+
+
+** if promise failse/rejected we have to catch and handle it 
+
+promise.then(function(orderId){
+    console.log(orderId);
+})
+.catch(function(err){
+    console.log(err.message);
+})
+
+
+async, await:
+-------------
+
+async:
+-------
+-> it is a keyword used to create async function
+* async function always returns a promise
+
+example:
+-------
+async function getData(){
+    //should return a promise
+    // it you return string or any type it will wrap into promise and then returns it 
+}
+
+* async, await -> are used to handle promises
+* await will resolve the promise, as we see to resolve promise we were using "promise.then" 
+* await keyword only can be used in the async function
+
+syntax:
+------
+const val = await promise;
+
+
+async function handlePromise(){
+    console.log("hello");
+    const val = await p;
+    ***//js engine will wait to here to resolve promise
+    console.log("hello1");
+    console.log(val)
+}
+handlePromise();
+o/p:
+hello
+// js engine will wait for promise to resolve once the promise is resolved then only all the statements after that will get trigged 
+hello1
+
+without async await:
+--------------------
+js engine will not wait for promise to get resolved. it will execute all the statements and after some time that we set in setTimeout
+the promise will get resolved.
+
+
+** but as we discssed earlier Js engine does not wait for anything to get executed what is happening.?
+
+what is happening is ** when the code execution comes callback and when it see await since it is not resolved, 
+function execution will suspends it, callstack get freed after few seconds based on time set in setTimeout and 
+then after resolving again it will get executed.
+
+error handling:
+--------------
+ 1st way:
+
+ try & catch block:
+ ------------------
+
+ async function handlePromise(){
+    try{
+        const data =  await fetch(api url);
+    }
+    catch(err){
+        console.log(err);
+    }
+ }
+
+another way:
+-----------
+handlePromise().catch((err)) => console.log(err);
+
+promise api's:
+-------------
+promise.all:
+------------
+* to make parallel api calls 
+* used to handle multiple promises
+syntax:
+-------
+promise.all([p1,p2,p3...pn])
+
+suppose we have three promises 
+-> promise.all([p1,p2,p3])
+let's say
+p1 takes 3 secs to get resolved
+p2 takes 1 secs
+p3 takes 2 secs 
+
+it will return values if all api's call were successfull[val1, val2, val3]
+
+* it will take 3 sec to get output, it will wait for all of them to finish
+
+suppose p2 got rejected, as soon as any promise get failed even promise.all also fails, it will return  error which got on p2,
+but it will even wait other promise to resolve
+
+** to get results from successfull promises we have
+promise.allSettlled:
+-----------------------
+* promise.allSettlled([p1,p2,p3])
+* if all 3 promise were successfull as expected it will return [val1, val2, val3]
+
+suppose if p2 got rejected:
+---------------------------
+it will wait for all promises to settled and return [val1, err2, val2]
+
+promise.race:
+-------------
+* it will return the result of the first settled promise
+promise.race([p1,p2,p3])
+p1 takes 3 secs
+p2 takes 1 secs
+p3 takes 2 secs
+
+after 1 sec it will return [val2]
+
+promise.race([p1,p2,p3])
+p1 takes 3 secs
+p2 takes 5 secs
+p3 takes 2 secs
+ 
+after 2 sec it will return [val3]
+
+** what if first settled promise fails:
+---------------------------------------
+promise.race([p1,p2,p3])
+p1 takes 3 secs
+p2 takes 5 secs
+p3 takes 2 secs
+
+it will return the error of that promise [err2]
+
+promise.any():
+------------
+* wait for first success(first resolved)
+promise.any([p1,p2,p3])promise.race([p1,p2,p3])
+p1 takes 3 secs
+p2 takes 5 secs
+p3 takes 1 secs
+
+returns [val3]
+
+suppose if first resolved promise got rejected,it will return the second resolved promise
+promise.any([p1,p2,p3])promise.race([p1,p2,p3])
+p1 takes 3 secs
+p2 takes 5 secs
+p3 takes 1 secs
+
+suppose p3 got rejected then it will return [val1]
+
+** if all promises were rejected will get aggregate error [err1, err2, err3]

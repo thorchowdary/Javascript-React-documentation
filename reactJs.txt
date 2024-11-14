@@ -1,0 +1,653 @@
+npm init --> it creates package.json file
+-> package.json will contain all the dependencies
+
+we will 2 types of dependencies
+1. dev [ when we are developing we ise deve dependencies]
+2. normal dependency [this might use in production]
+
+npm install -D parcel [ we need parcel as a dev dependency]
+
+here:
+-D refers to dev dependency
+in package.json will contains ^, ~ 
+
+^ -> if any new minor version upgrade happens in future if we use ^ it automatically install the new minor version.
+~ -> if any major version upgrade happens then it automatically installs it
+
+example:
+parcel : "^2.8.3"
+parcel : "~2.8.3"
+
+package.lock.json:
+-----------------
+whenever you install parcel or any module a new file will get created -- package.lock.json
+
+-> this file has the exact versions of the packages installed.
+-> it even has the field[field name is "integrity"] that store hashing & checks it local and whatever we are deploying same or not.
+
+* when you do npx parcel index.html -> it host our code in server[it runs our code on server]
+-> to execute packages we use "npx"
+-> to install package we use "npm"
+
+the way to get react project:
+-----------------------------
+* npm install react
+* npm install react-dom
+
+we download react and react-dom to use in the projects we need to import them
+
+import React from "react"
+import ReactDom from "react-dom"
+
+
+benfits of using parcel:
+-----------------------
+* it creates local server
+* automatically refreshing the page when we do code change(HMR -> Hot Module Replacement)
+* image optimization
+* minification
+* bundling
+* compressing the files
+* as soon as you change the code & save it, it will get reflected in the page the reason behind is 
+  "parcel" it has the "parcel-cache"
+* error handling
+* removes unused code(tree shaking)
+* different dev & prod bundle
+
+** to tell which browsers to support the code 
+---------------------------------------------
+we need to make an entry in package.json 
+
+"broweserList:{
+    "last : chrome versions",
+    "last : firefox versions".
+}
+
+* to start project in dev or production mode we go to package.json file and add entry at scripts tag:
+
+"scripts"{
+    "start" : "parcel index.html"
+    "run"   : "parcel build index.html"
+    "test"  : "test"
+}
+
+now no need to run "npx" commands since we can directly do "npm run start" or "npm start"
+-> to build our project "npm run build"
+
+different ways of writing html:
+------------------------------
+cosnt heading = React.createElement({
+    "h1",
+    {id:"heading"},
+    "hello world"
+};
+console.log(heading)
+)
+
+cosnt root  = ReactDom.createRoot(document.getElementById("root"));
+root.render(heading);
+
+* this is one way of doing, writing html using JS code but it just complex, so to overcome this facebook 
+developers developed JSX[JavaScript syntax] 
+
+* created html tags using JSX
+
+const jsxHeading = <h1>helloWorld</h1>
+-> this is not js code, js engine does not understand, js engine only understands echma-script(es6)
+then how it is getting executed, parcel transpiled before it reaches to JSX(parcel uses babel(js compiler))
+
+babel:
+-----
+the purpose of babel is to transpile JSX code to react code.
+
+* JSX is not html in JS, it is a html look like 
+* JSX is different & react is different
+* if we want to use "class" attribute to jsx we give it as "className" and it get converted to "class" by babel.
+* jsx attribute take "camel case".
+* if we writing multiple jsx line we need to put in brackets "(".
+
+
+example:
+const heading = (<h1 className = "heading">
+                    hello
+                </h1>
+);
+
+
+react components:
+-----------------
+there are 2 types of components
+1. class based components - [old way of writing code - uses js classes]
+2. functional components - [new way of writing code uses js functions]
+
+functional components:
+-----------------------
+it is just a normal js function which return some jsx
+
+example:
+--------
+const headComponents = () =>{
+    return <h1> helloWorld</h1>  == const headComponents = () => <h1>helloWorld</h1>;
+}
+
+to render components:
+---------------------
+root.render(<headComponents/>);
+
+to render one component in another component:
+---------------------------------------------
+example:
+-------
+const tittle = () =>()
+    <h1 className="tittle"> tittle component </h1>
+);
+
+const headComponent = () =>(
+ <div>
+    <tittle/> or <tittle> </tittle>
+    <h1 className="headComponent">"heading</h1>
+</div>
+);
+
+root.render(<headComponent/>);
+
+components composistion:
+-----------------------
+putting/using one component into other component is called component composistion.
+
+* to use js code in jsx we use {}
+example:
+--------
+
+const counter = 100;
+const tittle =()=>{
+    <h1>hello</h1>
+    {counter}
+    {console.log("hello")}
+    {10+20}
+};
+
+
+* how to use react element in jsx, react element is js code so we can use { }
+
+const tittle = (<h1>hello</h1>);
+
+const span =({tittle}
+    <span>
+        hello
+    </span>
+)
+
+const heading = () =>(
+    {tittle}
+);
+
+props:
+-----
+props are just normal arguments to function
+passing props to function is just a passing arguments to function.
+
+example:
+-------
+*** always components should be starting with capital letter
+const RestaurentCard = (props) => {
+    console.log(props);
+    return(
+        <div>
+            <h3> {props.resName}</h3>
+            <h3> {props.cusine}</h3>
+            <h3> {props.reating}</h3> 
+        <div>
+    )
+}
+
+const Body = () =>{
+    return (
+        <div>
+            <RestaurentCard resName = "a" cusines = "a,b,c" rating = "4.5"/>
+            //**here react will pack it as object & we pass it for functional component & we make use it.
+        <div>
+    )
+}
+
+** some time we can destructuring props on the file which instead of passing it as props we pass arguments.
+
+example:
+-------
+const abc = ({resName},{cusines},{rating})=>{
+
+}
+
+or we can do
+
+const {resName, cusines, rating} = props;
+
+
+config-driven ui:
+-----------------
+controlling ui based on the data we get, according to the data coming from api the ui will get changed
+this is called config drivern ui.
+
+* map method in hs to iternate items in array
+* everything that we iterate should be unique or will get an warning, always give a "key" attribute
+example:
+-------
+<RestaurentCard key={restaurent.data.id} resData={restaurent}/>
+
+why the key should be added inorder to make it unique:
+------------------------------------------------------
+suppose take an example:
+we have a an restaurent container in that so far we have 5 restaurents
+
+whenever a new comes and added to restaurent container react does not know which one is old and which came 
+and added newly it will re-renders everything.
+
+when you have the key now react knows it which one is older and which one is new it will re-render new one only.
+
+** always remember wherever you using map to iterate use "key" attribute
+
+** we can pass index instead of key but it is anti-pattern.
+   but if you don't have unique key in the data you are iterating you can go with index.
+
+export and import:
+------------------
+we have 2 types of exports and imports:
+1. default export and import - can have only one default export in one file
+2. named export and import - can have multiple
+
+
+to export component inorder to use in another component/file.
+--------------------------------------------------------------
+* export default ComponentName
+
+and to import when you want to use:
+* import ComponentName from "./Component/file"
+
+
+* best practise:
+---------------
+
+put all hardcode data & image linsk in different folder Utils->constants.js
+
+const LOGO_URL  ="url"
+const CDN_URL = "url"
+const ResLIST = "data"
+export default ResLIST;
+
+* IN ONE FILE we can hav 1 default export
+
+to export multiple things we use named export
+---------------------------------------------
+export const CDN_URL = "url" ->this wat of exporting is called "named export"
+export const LOGO_URL = "url"
+
+to import named export:
+-----------------------
+import {CDN_URL} from "./Utils/constants/js"
+
+
+state varibales:
+----------------
+* super powerful varibales
+
+reactHooks:
+----------
+react hooks nothing but js functions
+* useState() -> super powerful state variable in react.
+* useEffect()
+
+useState:
+---------
+import {useState} from React; --> named import.
+* it maintains the state of the variable.
+
+const [listOfRestaurents] = useState([]); --> this is how we create state variables.
+
+-> default value of state is useState([])
+
+-> inorder to update the state variable we cannot use listOfRestaurents == something.
+
+-> we need to update them by adding one more parameters setListOfRestaurents.
+
+const [listOfRestaurents, setListOfRestaurents] = useState([]);
+
+-> **whenever a state variable updates react re-render the component.
+* react does re-rendering very fast.
+* react uses "Reconsilitation algorithm" also known as react fiber.
+what is happening behind of re-renderin:
+---------------------------------------
+react has something called "virtual dom"
+
+virtual dom:
+------------
+-> react object is nothing but virtual dom.
+virtual dom:
+-----------
+* it is a react object
+
+-> it is a representation of actual dom
+actual dom:
+----------
+<div>
+    <div>
+        ......
+
+and we have diff algorithm:
+---------------------------
+finds out diff b/w updated virtual dom to older virtual dome & it finds the diffrence it render it by 
+updating actual dom.
+
+** whenever there is a change in the state variables react internally do check the diff b/w previous & current
+virtual dom if it finds the diffrence it will re-render it by updating the actual dom.
+
+* virtual dom is nothing but a "react object", react object , react finds out the diff b/w 2 "react objects"
+which is fast compared to html code comparision(actual dom)
+
+** const [user,setUser] = useState(["tharun"]);
+<button onclick={()=>{
+    setUser = {"kumar"}
+}}>
+{user}
+</button>
+
+here if you observe the variable we declared it constant but how are we updating it, we know that we cannot
+update teh const variables behind the scenes when their is  change in the variable, react render the entire
+component, when it render it will create a new variable of that name with new value that we set.
+
+
+2 ways to call api's:
+--------------------
+1st:
+----
+whenever uses loads it makes the api call after few seconds it render the ui
+
+    loads -> api call -> render the ui
+
+2nd:
+----
+whenever user loads, we render with what we have and make the api call & then we re-renders it.
+    loads --> render --> api call --> re-render
+
+* in react we will follow always 2nd approach.
+
+useEffect hook:
+---------------
+* as we know that hook is just a normal js function that we use for special case.
+
+syntax:
+------
+useEffect(()=>{}//callback function ,[])
+* whenever the component renders, the call back function will get execurted.
+* suppose if you want to do something after rendering teh page we use "useEffect".
+
+example:
+--------
+-> useEffect(()=>{
+    fethData();
+},[]// it dependency array is empty it will called at initial render(just once))
+
+const fetchData = () =>{
+    const data = await fetch("api");
+};
+
+const json = await data.json();
+console.log(json);
+
+-> useEffect(()=>{
+    fethData();
+},[buttonName])
+when their is dependency, it will gete executed only when their is change in the dependency.
+
+** always use "useState" inside the functional component the main purpose of useState it to create local
+state variables.
+
+* never use state variables inside the condition or for loops.
+
+react router:
+-------------
+npm install react-router-dom
+
+    url/about - about page
+    url/something - something page
+
+import {CreateBrowserRouter} from "react-router-dom"
+
+const appart = CreateBrowserRouter([
+    {
+        path: "/",
+        element :<AppLayout/> 
+    },
+    {
+        path : "/about",
+        element : <About/>
+    }
+]);
+
+herer in this we just declared what should do what, but inorder to render we need to use
+"RouterProvider" from react-dom
+
+About.js:
+---------
+const About = () =>{
+    return {
+        <div>
+            <h1>About</h1>
+            <h1>this is hello about</h1>
+        </div>
+
+    };
+}
+
+export default About;
+
+to render:
+----------
+root.render(<RouterProvider router= {appRouter}/>);
+
+* when there is no router for what user requested.
+
+create error component:
+-------------------------
+
+import {useRouterError} from "react-router-dom"
+const Error = () =>{
+    const err = useRouterError();
+    return (
+        <div>
+            <h1>err</h1>
+            <h2>something went wrong<h2>
+        </div>
+        <h3>{err.statuscode}:{err.status}<h3>
+    )
+}
+
+export default error;
+
+useRouterError: -> if we use this this will give extra info about the error/issue we can log more.
+--------------
+
+to use this error component we use "Error element:
+--------------------------------------------------
+{
+    path:"/
+    element: <AppLayout/>,
+    errorElement :<Error/>
+}
+
+
+child routes:
+-------------
+to make links like when you click on about it has to go to about and header should be there.
+
+* we know that in html we have "anchor" tag to create links but if you use "anchor tag", it re-loads/re-render
+page so thus may lead to slow, so for that reason we have "link" in react (it will not re-render the page, it
+just change the component)
+
+* behind the scenes the link is wrapped in anchor tag, if inspect you will see anchor tag.
+
+
+import {link} from "React"
+<link to = "/About">A </link>
+
+to implement child page logic we have something called OUTLET:
+---------------------------------------------------------------
+we have (outlet) from "react-router-dom", 
+outlet -> stores all the routes the we give on "children" and based on what we requested path it will get updated.
+
+<div>
+    <Header/>
+    <Outlet/>
+</div>
+
+const appRouter = CreateBrowserRouter([
+    {
+        path: "/",
+        element :<AppLayout/>,
+        children: [{
+            path :"/",
+            element :<Body/>
+            },
+            {
+            path :"/about",
+            element :<About/> 
+            },
+            errorElement: <Error/>
+        ]
+    }
+])
+
+there are 2 types of routing:
+------------------------------
+1. client side routing
+-----------------------
+we have every component & it get rendered based on request it just loads the component.
+
+2. server side routing
+----------------------
+suppose we have About page when you click on "About" it make an network call to some other source & loads it,
+this type is called server side routing.
+
+dynamic routing:
+---------------
+suppose we have multiple restaurents, when you clik on it you will see it name on the context path this 
+is called dynamic routing.
+
+* useparams():
+---------------
+to use url parameters
+
+custom hooks:
+-------------
+* every component should return only one functionality it will be good for debugging as well.
+
+the purpose of custom hooks is we can create our own utility function (hook)
+
+* example:
+----------
+we will create one custom hool that handles only fetching data and will give it to component now only 
+functionality of component is to render the data.
+
+*always useHookName as naming convention.
+
+lazy loading/ on-demand loading:
+--------------------------------
+suppose we have food, frocery 2 components when you browse web page it should load and whenever user click
+on grocery then only  the grocery page should load this is called lazy loading/on-demand loading.
+
+to do lazy loading:
+------------------
+const grocery = lazy(()=> import("path of the component"));
+
+since we created it as seperate bundle, whenever you load you will not see grocery file in the console,
+when you click on it, it will go to that (it will load grocery page) & it takes sometime to load(the time b/w
+loading the grocery page we can display like loading using <suspence>)
+
+<suspence fallback={<h1>loading...</h1>}
+<Grocery/>
+</suspence>
+
+** the purpose of bundling the code into multiple bundles, if we do all in single component, the file will
+become huge & it will load very slowly, so we break down into chunks of code like creating multiple components.
+
+higer order components:
+-----------------------
+it is a function that takes an component & returns component by tweaking it.
+
+why & when do we use it:
+-------------------------
+takes a component & enhances it & returns a component it is called higher order component.
+
+lifting the state up:
+---------------------
+means we declare the state in one component & gives control to set that state file to other component
+this is called lifting state up.
+
+example:
+--------
+import React, { useState } from 'react';
+import Counter from './Counter';
+
+const App = () => {
+  const [count, setCount] = useState(0);
+
+  const increment = () => {
+    setCount(count + 1);
+  };
+
+  return (
+    <div>
+      <Counter count={count} increment={increment} />
+    </div>
+  );
+};
+
+export default App;
+
+import React from 'react';
+
+const Counter = ({ count, increment }) => {
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={increment}>Increment</button>
+    </div>
+  );
+};
+
+export default Counter;
+
+
+props drilling:
+---------------
+suppose if we want to pass state variables from parent to child we can pass them as arguments,
+what if we have some 9 sub childs then pass the data from parent to 9th child we need to pass the props in
+each & every child to reach the 9th child this is called props drilling.
+
+to solve props drilling problem we have "ReactContext"
+------------------------------------------------------
+"ReactContext" -> it is a global space where data is kept & it can be access any component.
+
+example:
+--------
+suppose we have user & it has to passed over everywhere in the, we have multiple web pages once user logins
+it has to be everywhere for thes kind os situation we use "ReactContext"
+
+userContext.js:
+--------------
+
+const userContext = CreateContext({
+    loggesUser = "DefaultUser"
+})
+
+export default userContext;
+
+to access the ReactContext:
+---------------------------
+we have hook called "useContext'
+
+const data = useContext(userContext);
+
+** ReactContext data can be get/use anywhere in the project.
+
+Redux:
+-----
