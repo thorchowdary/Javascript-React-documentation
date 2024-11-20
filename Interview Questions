@@ -1,3 +1,18 @@
+Html:
+----
+1. where do we place script tag and it's syntax.
+2. can we place script tag in header.?
+3. in Body tag what if i place script tag at the beginning.
+4. div and span
+css:
+----
+1. explain box model
+2. flex
+3. posistion
+
+JavaScript:
+-------------
+
 tell the output:
 ----------------
 console.log(‘1’)
@@ -7,6 +22,13 @@ res();
 }).then(res= > console.log(‘3’)
 console.log(‘4’)
 setTimeout(() => { 	console.log(‘5’) }, 0)
+
+2. hoisting
+3. async and defer
+4. prototype
+5. spread operator
+6. optional chaining
+7. how js handles asyncronous. 
 
 polyfill of map:
 -------------------
