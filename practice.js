@@ -33,6 +33,17 @@ multiplyBy2(5);
 let multiplyBy4 = multiply.bind(this, 4); // here we are notwriting the new code for mulby4 we are resuing the multoly method
 multiplyBy4(5);
 
+// the other way to do function currying is using closures
+
+let multiply2 = function (x) {
+  return function (y) {
+    console.log(x * y);
+  };
+};
+
+let multiplyByTwo = multiply2(2);
+multiplyBy2(4);
+
 //call --this is used to call a function in other place also called function borrowing
 
 let name1 = {
@@ -53,4 +64,7 @@ let printDetails = function (homeTown, state) {
 };
 
 printDetails.call(name1, "Ap", "Rayachoty");
-//bind is similar to call but the difference is bind make the copy of the function whereas call overrides the exisisting function
+//bind is similar to call but the difference is bind make the copy of the function and we can call it whereever we want, whereas call overrides the exisisting function
+
+let getDetails = printDetails.bind(name1, "ap", "rct"); // it make the copy of the printDetails function and we can invoke it whereever we want
+getDetails();
