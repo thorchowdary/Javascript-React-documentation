@@ -29,6 +29,7 @@ setTimeout(() => { 	console.log(‘5’) }, 0)
 5. spread operator
 6. optional chaining
 7. how js handles asyncronous. 
+8. why hoisting is required.
 
 polyfill of map:
 -------------------
