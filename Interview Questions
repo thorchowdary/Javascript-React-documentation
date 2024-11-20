@@ -1,0 +1,30 @@
+tell the output:
+----------------
+console.log(‘1’)
+new Promise(res=> {
+	console.log(‘2’);
+res();
+}).then(res= > console.log(‘3’)
+console.log(‘4’)
+setTimeout(() => { 	console.log(‘5’) }, 0)
+
+polyfill of map:
+-------------------
+const number = [1, 2, 3]
+const squares = number.map(function(num){
+    num * num;
+})
+
+Array.prototype.myOwnMap =  function(fn){
+    const resArray = []
+    for(let i=0; i < this.length; i++ ){
+        resArray.push(fn(this[i], i));
+    }
+    return resArray;
+}
+ const newArr = number.myOwnMap(function (item){
+     return item*item
+ })
+ 
+ console.log(newArr)
+
