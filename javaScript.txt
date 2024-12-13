@@ -1011,3 +1011,173 @@ p3 takes 1 secs
 suppose p3 got rejected then it will return [val1]
 
 ** if all promises were rejected will get aggregate error [err1, err2, err3]
+
+
+this keyword:
+--------------
+this keyword will act different in respective scenario.
+
+this in global space:
+---------------------
+console.log(this);
+o/p: global space object(window)
+since "this" is in the global space so it is representing "global space object which is window", the global space objcet
+will get vary in nodejs and other browsers.
+
+this keyword works differently in strict mode and non-strict mode:
+------------------------------------------------------------------
+to use strict mode we write on top of the file "use strict"
+and we have a function
+
+this inside function:
+---------------------
+function x(){
+     //this value depends on strict/no strict mode
+     console.log(this)
+};
+x();
+whenever we are strict mode we get undefined and non-stict mode we are getting "window object"
+
+this in non-strict mode("this substitution"):
+-----------------------------------------------
+if the value of "this" is undefined or null "this" will replaced with global object only in non-strict mode, that
+is the reason we are getting window[global space object] in non-strict mode.
+
+
+this keyword value depends on how the the function is called:
+-------------------------------------------------------------
+x(); // undefined
+window.x(); // window object
+
+this inside a objects method:
+------------------------------
+const obj = {
+     a = 10;
+     x: function(){          // function inside object is called method
+          console.log(this);
+          console.log(this.a) // o/p: a since this is refering to entire obj { a:10, x:f }it has the value of a 
+     }
+}
+obj.x();
+in object method "this" refers to the entire object
+o/p: {a:10, x:f)
+
+call, apply and bind methods(sharing methods):
+-----------------------------------------------
+"this" can be modified/overrided using call, apply & bind methods.
+all these methods accept "this" as parametet 
+Example:
+call(this) whaterver we pass it is refering to this.
+
+example:
+--------
+cosnt student = {
+     name = "tharun",
+     printName = function(){
+          console.log(this.name);
+                         |                 this.name now this = {student2} o/P:kumar
+                         |-------------------------------------             
+     }                                                         |               
+}                                                       
+student.printName(); o/p: tharun                               |
+
+const student2 = {                                             |
+      name = "kumar"                                           |
+};
+                           |---> since call hold this as parameter , now this is refering to student2                                 
+student.printName.call(student2) o/p: kumar
+
+this inside arrow function:
+---------------------------
+it retains the "this" value of the enclosing lexical context.
+
+const obj = { 
+     a = 10;
+     x = () =>{
+          console.log(this);
+     }
+}
+obj.x(); o/p: window object
+since the obj is in global space this is refering to global object [window]
+
+this inside nested arroe function:
+----------------------------------
+const obj = {
+     a =20 ;
+     x = function(){
+          const y = () ={
+               console.log(this);
+          }
+     }
+}
+o/p: {a:20, x:f}
+arrow function is lexically enclosed with function x and this in function refers to obj so it is refering to obj.
+
+this inside DOM:
+---------------
+<button onlclick = "alert(this)">clickme</button>
+this refers to the HTMLelement which is the <button> here
+
+
+optional chanining:
+-------------------
+*echmascript 2020
+it is a safe way to access nested object properties, even if the property does not exist.
+
+example:
+--------
+without optional chaining:
+--------------------------
+let pets = {
+     cat:{
+          name:"heo"
+}
+}
+alert(pets.dog.cat)
+o/P: will get more lines of error.
+
+with optional chaining:
+-----------------------
+
+alert(pets.dog?.cat); --> it will check for dog property if its there then prints name else undefined.
+0/P: undefined
+
+spread operator:(...)
+---------------
+allow an iterable such a array or string to be exapnaded into seperate elements (unpacks the elements), it even used 
+for appending arrays
+arr_new = [...arr1, ...arr2]
+*  It's commonly used for copying, merging, or manipulating data.
+
+const arr1 = [1, 2, 3];
+const arr2 = [...arr1]; // Creates a shallow copy
+console.log(arr2); // Output: [1, 2, 3]
+
+
+const arr1 = [1, 2];
+const arr2 = [3, 4];
+const merged = [...arr1, ...arr2];
+console.log(merged); // Output: [1, 2, 3, 4]
+
+const numbers = [2, 3, 4];
+const newNumbers = [1, ...numbers, 5];
+console.log(newNumbers); // Output: [1, 2, 3, 4, 5]
+
+const numbers = [1, 2, 3];
+function sum(x, y, z) {
+  return x + y + z;
+}
+console.log(sum(...numbers)); // Output: 6
+
+// Spread
+const arr = [1, 2, 3];
+console.log([...arr]); // Expands into individual elements
+
+// Rest
+function example(...args) {
+  console.log(args); // Collects arguments into an array
+}
+example(1, 2, 3); // Output: [1, 2, 3]
+
+
+
